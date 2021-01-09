@@ -1,0 +1,8 @@
+kernel:
+    resource: ../../src/Kernel.php
+    type: annotation
+api_v1:
+    resource: api/v1/**/*.php
+    name_prefix: api_v1_
+    prefix: api/v1
+    format: json

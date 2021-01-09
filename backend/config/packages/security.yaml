@@ -1,0 +1,48 @@
+security:
+    providers:
+        users_in_memory: { memory: null }
+        root_user_provider:
+            entity:
+                class: App\Entity\User
+                property: email
+
+    encoders:
+        App\Entity\User:
+            algorithm: bcrypt
+            cost: 12
+
+    firewalls:
+        sign_in:
+            pattern:  ^/api/v1
+            stateless: true
+            anonymous: true
+            provider: root_user_provider
+            lexik_jwt: ~
+            json_login:
+                check_path:               /api/v1/sign_in
+                success_handler:          lexik_jwt_authentication.handler.authentication_success
+                failure_handler:          lexik_jwt_authentication.handler.authentication_failure
+
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            anonymous: true
+            lazy: true
+            provider: users_in_memory
+
+        api:
+            pattern:   ^/api
+            stateless: true
+            provider: root_user_provider
+            lexik_jwt: ~
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+#                entry_point: lexik_jwt_authentication.jwt_token_authenticator
+
+
+    access_control:
+        - { path: ^/api/v1/sign_in, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/v1/*, roles: ROLE_USER }
