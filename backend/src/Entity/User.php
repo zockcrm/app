@@ -27,13 +27,13 @@ class User implements UserInterface
     /**
      * @ORM\Column(type="json")
      */
-    private $roles = [];
+    private array $roles = [];
 
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    private $password;
+    private string $password;
 
     public function getId(): ?int
     {
@@ -81,6 +81,12 @@ class User implements UserInterface
         return $this;
     }
 
+    public function addRole(string $role): User
+    {
+        $this->roles = array_merge($this->roles, [$role]);
+        return $this;
+    }
+
     /**
      * @see UserInterface
      */
@@ -99,7 +105,7 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function getSalt()
+    public function getSalt(): ?string
     {
         // not needed when using the "bcrypt" algorithm in security.yaml
     }
@@ -112,4 +118,6 @@ class User implements UserInterface
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
     }
+
+
 }
